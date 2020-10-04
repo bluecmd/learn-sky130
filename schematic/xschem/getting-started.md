@@ -86,6 +86,7 @@ Gaw is not packaged for Ubuntu so we will have to build it ourselves.
 ```
 wget http://download.tuxfamily.org/gaw/download/gaw3-20200922.tar.gz
 sudo apt install libgtk-3-dev
+./configure
 make -j$(nproc)
 sudo make install
 
