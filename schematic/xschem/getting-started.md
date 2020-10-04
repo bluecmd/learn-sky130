@@ -3,6 +3,8 @@
 Let's build an inverter using xscheme in the
 [Skywater 130nm process](https://skywater-pdk.readthedocs.io).
 
+![inverter simulation screenshot](inverter.png)
+
 ## Background
 
 You are working for Inverter-Tech Inc. which specializes in taking
