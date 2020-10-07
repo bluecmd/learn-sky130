@@ -1,0 +1,4 @@
+# Configure xschem project directory to use sky130 symbols
+set XSCHEM_LIBRARY_PATH {}
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
+append XSCHEM_LIBRARY_PATH :/usr/local/share/xschem_sky130

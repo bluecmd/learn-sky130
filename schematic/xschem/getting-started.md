@@ -147,24 +147,14 @@ make -j$(nproc)
 sudo make install
 ```
 
-1) Go into Simulation -> Configure simulators and tools.
-1) Make sure "Ngpsice Batch"[1] and Gaw is selected.
-  **Tip**: I like ngspice batch to be the following which allows you to see the status:
-  `$terminal -e 'set -o pipefail; (ngspice -b -r "$n.raw" "$N" | tee "$n.out") || (echo -e "\n** ngspice exited with error code $? **\nPress enter to close"; read)'`
-1) Keep Fg checked and Status unchecked.
-1) Press "Accept and close"
-
-[1] Ngspice batch is needed for the raw-file to be created which Gaw uses to populate its table.
-
-### Installation of sky130 primitives
+### Installation of sky130 primitives and symbols
 
 **TODO**: Describe why we are doing this maybe.
 
 ```
-cd /usr/local/share/
-sudo mkdir sky130_fd_pr
-chown $USER sky130_fd_pr
-git clone https://foss-eda-tools.googlesource.com/skywater-pdk/libs/sky130_fd_pr sky130_fd_pr
+sudo install -o $USER -d /usr/local/share/{sky130_fd_pr,xschem_sky130}
+git clone https://foss-eda-tools.googlesource.com/skywater-pdk/libs/sky130_fd_pr /usr/local/share/sky130_fd_pr
+git clone https://github.com/StefanSchippers/xschem_sky130 /usr/local/share/xschem_sky130
 ```
 
 ## Basics of xschem
@@ -177,20 +167,96 @@ along.
 
 Congrats! You simulated a schematic using open-source tools!
 
-## Designing an inverter
+## Designing an inverter using sky130
+
+It is now time to design the inverter. If you prefer to jump straight to
+a finished example to play around with, the final result is available as
+`basic-inverter.sch` in this repository.
+
+**Note**: If you installed the PDK somewhere else make sure to update the
+`.lib` statement in the SPICE component in the lower-right corner.
+
+### Creating the schematic
+
+The first thing we need to do is to tell xschem what components we are
+interested in using. This is done by setting up an `xschemrc` file.
+
+Create a directory where you will store your sky130 schematics and create
+a new file called `xschemrc` in that directory. The contents of that file should
+be:
+
+```
+# Configure xschem project directory to use sky130 symbols
+set XSCHEM_LIBRARY_PATH {}
+append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
+append XSCHEM_LIBRARY_PATH :/usr/local/share/xschem_sky130
+```
+
+This instructs xschem to show two libraries:
+
+1) The generic library containing generic SPICE symbols
+2) The process-specific sky130 library
+
+We are now ready to start xschem and create our schematic. Open a terminal in
+the directory you created and type `xschem`. You should now be looking at
+an empty schematic. Save the schematic using `Ctrl+S` and name it something
+like `my-first-inverter.sch`.
+
+### Adding components
 
 TODO: Describe the process
 
-**NOTE**: To use the pmos4/nmos4 components, you should use these parameters:
+Summary for now:
+
+1) Insert two `devices/vsource.sym` (vcc and vin)
+1) Insert one `devices/gnd.sym`
+1) Insert one `sky130_fd_pr/pfet_01v8.sym` (pmos)
+1) Insert one `sky130_fd_pr/nfet_01v8.sym` (nmos)
+1) Insert three `devices/lab_pin.sym` (vcc, in, inv\_out)
+1) Insert one `devices/code_shown.sym`
+1) (Optional) Insert one `devices/title.sym`
+
+Make the vcc 1.8V and the vin something like `pulse(0 1.8 1ns 1ns 1ns 5ns 10ns)`.
+
+In the `code_shown` component, ensure the following properties are set:
 ```
-model=sky130_fd_pr__pfet_01v8 w=1 l=1 m=1 spiceprefix=X
+name=SPICE only_toplevel=false value=".lib /usr/local/share/sky130_fd_pr/models/sky130.lib.spice tt
+.tran 0.1n 1u
+.save all"
 ```
 
-The `spiceprefix=X` is needed because the FET is defined as a so called
-subcircuit and will not be correctly located otherwise. If you get
-an error like `could not find a valid modelname` you might have forgotten to
-add this property.
+### Setting up the simulation configuration
 
-The final result is available in `basic-inverter.sch`.
-If you installed the PDK somewhere else make sure to update the `.lib` statement
-in the SPICE component in the lower-right corner.
+**Note**: You only need to do these steps once and some parts come down to a
+matter of taste.
+
+Open up the simulator configuration by going into Simulation -> Configure simulators and tools.
+
+The important thing to select is that Gaw is the preferred `spicewave`
+software and that Ngspice is the preferred `spice` software.
+
+It is **very important** that the selected Ngspice is one that produces a
+waveform file (i.e. it has the `-r "$n.raw"` flag).
+A decent selection is "Ngspice Batch", although I personally
+recommend changing the command like to something like the following:
+
+```
+$terminal -e 'set -o pipefail; (ngspice -b -r "$n.raw" "$N" | tee "$n.out") || (echo -e "\n** ngspice exited with error code $? **\nPress enter to close"; read)'
+```
+
+If you do use that line, I recommend keeping Fg checked and Status unchecked.
+With that setup you will get a terminal showing that keeps you apprised on the
+simulation progress. The terminal will auto-close if the simulation was
+successful, which in the long run saves you time and energy.
+
+When you are finished with the simulator setup, press "Accept and close"
+
+### Simulating the design
+
+TODO: Describe
+
+In summary:
+
+1) Press Netlist, then Simulate, then Waves.
+2) Select a net, e.g. `inv_out` and press `Alt+G` to show it in Gaw.
+
