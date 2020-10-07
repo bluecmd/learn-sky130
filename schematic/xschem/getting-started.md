@@ -3,6 +3,21 @@
 Let's build an inverter using xscheme in the
 [Skywater 130nm process](https://skywater-pdk.readthedocs.io).
 
+  * [Background](#background)
+    * [What is Schematic Capture and why do we need it?](#what-is-schematic-capture-and-why-do-we-need-it)
+    * [What is a process?](#what-is-a-process)
+  * [Installation](#installation)
+    * [Installation of ngspice](#installation-of-ngspice)
+    * [Installation of gaw](#installation-of-gaw)
+    * [Installation of xschem](#installation-of-xschem)
+    * [Installation of sky130 primitives and symbols](#installation-of-sky130-primitives-and-symbols)
+  * [Basics of xschem](#basics-of-xschem)
+  * [Designing an inverter using sky130](#designing-an-inverter-using-sky130)
+    * [Creating the schematic](#creating-the-schematic)
+    * [Adding components](#adding-components)
+    * [Setting up the simulation configuration](#setting-up-the-simulation-configuration)
+    * [Simulating the design](#simulating-the-design)
+
 ![inverter simulation screenshot](inverter.png)
 
 ## Background
