@@ -79,10 +79,10 @@ sudo apt install ngspice
 
 ### Installation of gaw
 
-[Gaw] is a fork/rewrite of an older tool called Gwave. It is used to visualize
-the simulation data we will produce with the finished circuit. Without a
-waveform viewer such as Gaw we would not be able to see if our inverter works
-or determine how fast it can operate.
+[Gaw](https://gaw.tuxfamily.org/linux/gaw.php) is a fork/rewrite of an older
+tool called Gwave. It is used to visualize the simulation data we will produce
+with the finished circuit. Without a waveform viewer such as Gaw we would not be
+able to see if our inverter works or determine how fast it can operate.
 
 As of this writing Gaw is not packaged for Ubuntu which means we will have to
 build it ourselves from the source code.
@@ -108,16 +108,13 @@ The xschem software support integration with Gaw, but we need to set that up.
 The easiest way to do this is to start Gaw and then quit it. This might sound
 strange, but the reason to do this is for it to write out its default
 configuration so we can easily edit it.
-
-So go ahead and start Gaw, either from a terminal by typing `gaw` or from
+Go ahead and start Gaw, either from a terminal by typing `gaw` or from
 your desktop environment. When it has started go ahead and close it straight
 away.
 
-Now, let's edit the Gaw configuration. Open the file `~/.gaw/gawrc` either from
+Now let's edit the Gaw configuration. Open the file `~/.gaw/gawrc` either from
 the terminal with something like `gedit ~/.gaw/gawrc` or from your desktop
-environment.
-
-Find the line that says `up_listenPort = 0` and change that to
+environment. Find the line that says `up_listenPort = 0` and change that to
 `up_listenPort = 2020`. Port 2020 is the default port that xschem uses to
 talk to Gaw. You can choose another port, but then you will have to configure
 xschem to use that port as well.
