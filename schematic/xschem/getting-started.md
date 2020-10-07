@@ -64,9 +64,9 @@ very much welcomed!
 
 The tools we will install are:
 
- * xscheme - The schematic capture tool
- * ngspice - The circuit simulator
- * gaw - A waveform viewer to view the simulation results
+ * [xscheme](http://repo.hu/projects/xschem/) - A schematic capture tool
+ * [ngspice](http://ngspice.sourceforge.net/) - A circuit simulator
+ * [gaw](https://gaw.tuxfamily.org/linux/gaw.php) - A waveform viewer to view the simulation results
 
 ### Installation of ngspice
 
@@ -79,27 +79,62 @@ sudo apt install ngspice
 
 ### Installation of gaw
 
-Gaw is not packaged for Ubuntu so we will have to build it ourselves.
+[Gaw] is a fork/rewrite of an older tool called Gwave. It is used to visualize
+the simulation data we will produce with the finished circuit. Without a
+waveform viewer such as Gaw we would not be able to see if our inverter works
+or determine how fast it can operate.
 
-**TODO**: Write this in a nicer way, this is just a dump right now
+As of this writing Gaw is not packaged for Ubuntu which means we will have to
+build it ourselves from the source code.
+
+In order to find the latest version you can check the
+[Gaw download page](http://download.tuxfamily.org/gaw/download/).
+
+Open a terminal and execute these commands:
 
 ```
+sudo apt install libgtk-3-dev build-essential
 wget http://download.tuxfamily.org/gaw/download/gaw3-20200922.tar.gz
-sudo apt install libgtk-3-dev
+tar -xf gaw3-20200922.tar.gz
+cd gaw3-20200922
 ./configure
 make -j$(nproc)
 sudo make install
-
-# Important!
-# Start gaw once and exit it
-gaw
-# Now change the rcfile
-$EDITOR ~/.gaw/gawrc
-# Find up_listenPort = 0 and set it to 2020.
-# This is needed for xschem to integrate well with gaw
 ```
 
-Optional: `gaw examples/rlc_lpf_trans.dat` to figure out how the tool works.
+You have now installed gaw into `/usr/local/bin/gaw`.
+
+The xschem software support integration with Gaw, but we need to set that up.
+The easiest way to do this is to start Gaw and then quit it. This might sound
+strange, but the reason to do this is for it to write out its default
+configuration so we can easily edit it.
+
+So go ahead and start Gaw, either from a terminal by typing `gaw` or from
+your desktop environment. When it has started go ahead and close it straight
+away.
+
+Now, let's edit the Gaw configuration. Open the file `~/.gaw/gawrc` either from
+the terminal with something like `gedit ~/.gaw/gawrc` or from your desktop
+environment.
+
+Find the line that says `up_listenPort = 0` and change that to
+`up_listenPort = 2020`. Port 2020 is the default port that xschem uses to
+talk to Gaw. You can choose another port, but then you will have to configure
+xschem to use that port as well.
+
+Congratulations, you are done with the Gaw installation! This is one of the
+harder parts so give yourself a pat on the back.
+
+**(Optional)** If you want you can load up an example file into Gaw which will
+allow you to get more familar with how Gaw works. To do this,
+run `gaw gaw3-20200922/examples/rlc_lpf_trans.dat`. You should see two windows;
+a bigger one and a smaller one. The smaller one should contain two entries
+named `sig_in` and `sig_out`. These are signal names if you haven't guessed it
+already. To view them all you have to do is drag them onto one of those big
+black areas in the bigger window. Try dragging both signals to the same window
+and you should see something like the below.
+
+![gaw example waveform](gaw-example.png)
 
 ### Installation of xschem
 
@@ -159,6 +194,6 @@ subcircuit and will not be correctly located otherwise. If you get
 an error like `could not find a valid modelname` you might have forgotten to
 add this property.
 
-The final result is available in `inverter.sch`.
+The final result is available in `basic-inverter.sch`.
 If you installed the PDK somewhere else make sure to update the `.lib` statement
 in the SPICE component in the lower-right corner.
