@@ -154,7 +154,7 @@ and you should see something like the below.
 
 ```
 sudo apt build-dep xschem # todo: expand to what is actually needed
-sudo apt install xterm graphicsmagick ghostscript
+sudo apt install xterm graphicsmagick ghostscript git flex bison tcl tk autoconf automake autopoint autotools-dev debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext intltool-debian libarchive-zip-perl libcroco3 libdebhelper-perl libfile-stripnondeterminism-perl libsub-override-perl libtool libx11-xcb-dev libxpm-dev libxss-dev libxt-dev po-debconf tcl-dev tcl8.6-dev tk-dev tk8.6-dev
 # GraphicsMagick is needed for PNG export, ghostscript for pdf
 git clone https://github.com/StefanSchippers/xschem.git
 ./configure
